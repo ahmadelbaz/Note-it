@@ -1,38 +1,23 @@
 package com.ahmadelbaz.remember;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.provider.AlarmClock;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,16 +27,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import static android.app.Notification.VISIBILITY_PUBLIC;
 import static com.ahmadelbaz.remember.ListNotesActivity.arrayAdapter;
 import static com.ahmadelbaz.remember.ListNotesActivity.notesAddressList;
 import static com.ahmadelbaz.remember.ListNotesActivity.notesCalenderList;
 import static com.ahmadelbaz.remember.ListNotesActivity.notesList;
 
 public class AddAndEditNoteActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+
+    //instantiation
 
     SharedPreferences prefs;
 
@@ -62,7 +47,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
     EditText noteText_editText;
     EditText noteTitle_editText;
 
-    TextView addCalender;
+    TextView addCalender_textView;
 
     String newText = "";
     String oldText = "a";
@@ -73,7 +58,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
     String inMessage;
     String inTitleMessage;
-    // String e;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,20 +69,24 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         noteText_editText = (EditText) findViewById(R.id.noteText_editText);
         noteTitle_editText = (EditText) findViewById(R.id.noteTitle_editText);
 
-        addCalender = findViewById(R.id.addCalender);
+        addCalender_textView = findViewById(R.id.addCalender_textView);
 
+        // Get the intent to know is that a new note or an old one
         Intent i = getIntent();
 
         if (getIntent() != null) {
             String strdata = getIntent().getExtras().getString("Unique");
 
+            // if this note is an old one
             if (strdata.equals("OldNote")) {
                 noteText_editText.setEnabled(false);
                 noteTitle_editText.setEnabled(false);
                 inMessage = oldText;
                 inTitleMessage = oldTitleText;
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-            } else if (strdata.equals("NewNote")) {
+            }
+            // if this note is a new one
+            else if (strdata.equals("NewNote")) {
                 inMessage = newText;
                 inTitleMessage = newTitleText;
                 noteText_editText.setEnabled(true);
@@ -107,16 +95,20 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             }
         }
 
+        // get the note id if it is an old one
+        // if this note is a new note so the id
+        // will be -1
         noteId = i.getIntExtra("noteId", -1);
 
         doInAddActivity(noteText_editText, notesList, oldText, 1);
         doInAddActivity(noteTitle_editText, notesAddressList, oldTitleText, 2);
-        doInCalender(noteText_editText, notesCalenderList, oldDateAndTime, 3);
+        getNoteTimeData(noteText_editText, notesCalenderList, oldDateAndTime, 3);
 
         checkNightMode();
     }
 
-    private void doInCalender(EditText editableText, List<String> editedList, String editedString, final int a) {
+    // get note time data from shared preference
+    private void getNoteTimeData(EditText editableText, List<String> editedList, String editedString, final int a) {
 
         Calendar c = Calendar.getInstance();
 
@@ -130,7 +122,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             newDateAndTime = "" + editedList.get(noteId);
             oldDateAndTime = "" + editedList.get(noteId);
 
-            addCalender.setText("" + editedList.get(noteId));
+            addCalender_textView.setText("" + editedList.get(noteId));
 
 
             newDateAndTime = oldDateAndTime;
@@ -138,12 +130,13 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
             editedList.add("");
 
-            addCalender.setText("" + dateAndTime);
+            addCalender_textView.setText("" + dateAndTime);
 
             newDateAndTime = dateAndTime;
         }
     }
 
+    // get note title and text data from shared preference
     private void doInAddActivity(EditText editableText, List<String> editedList, String editedString, final int a) {
 
         if (noteId != -1) {
@@ -424,7 +417,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         }
     }
 
-    // Method to save title and script
+    // Method to save title and text
     private void saveButtonPressed(EditText editedText, EditText secondaryEdit, List<String> editedList, String editableString, String dbKey, int a) {
 
         if (a == 1) {
@@ -500,6 +493,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         finish();
     }
 
+    // what will happen if user press save button
     public void saveNote_button(View view) {
 
         Calendar c = Calendar.getInstance();
@@ -523,6 +517,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         finish();
     }
 
+    // what will happen if user press cancle button
     public void cancelNote_button(View view) {
         if (noteId == -1) {
 
@@ -541,6 +536,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         finish();
     }
 
+    // check if user used night mode or not from settings
     private void checkNightMode() {
 
         prefs = this.getSharedPreferences("NightModeKey", Context.MODE_PRIVATE);
@@ -554,7 +550,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             noteTitle_editText.setTextColor(Color.WHITE);
             noteTitle_editText.setBackgroundColor(Color.BLACK);
             scrollView.setBackgroundColor(Color.BLACK);
-            addCalender.setTextColor(Color.WHITE);
+            addCalender_textView.setTextColor(Color.WHITE);
 
         } else {
 
@@ -563,7 +559,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             noteTitle_editText.setTextColor(Color.BLACK);
             noteTitle_editText.setBackgroundColor(Color.WHITE);
             scrollView.setBackgroundColor(Color.WHITE);
-            addCalender.setTextColor(Color.BLACK);
+            addCalender_textView.setTextColor(Color.BLACK);
         }
     }
 

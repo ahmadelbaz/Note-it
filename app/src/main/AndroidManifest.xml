@@ -26,8 +26,6 @@
         <activity android:name=".Settings"
             android:parentActivityName=".ListNotesActivity"></activity>
 
-        <receiver android:name=".AlarmReciever"/>
-
 
     </application>
 

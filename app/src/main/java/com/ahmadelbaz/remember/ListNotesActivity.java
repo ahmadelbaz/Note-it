@@ -6,14 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,17 +24,14 @@ import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ListNotesActivity extends AppCompatActivity {
+
+    //instantiation
 
     SharedPreferences prefs;
 
@@ -53,8 +47,6 @@ public class ListNotesActivity extends AppCompatActivity {
     ListView addNote_listView;
 
     int realPosetiotn;
-
-    //   SwipeRefreshLayout mSwipeRefreshLayout;
 
     static List<String> notesList;
 
@@ -75,17 +67,6 @@ public class ListNotesActivity extends AppCompatActivity {
 
         noteText_editText = (EditText) findViewById(R.id.noteText_editText);
         noteTitle_editText = (EditText) findViewById(R.id.noteTitle_editText);
-
-
-        /*mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshMenu();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });*/
 
         tinydb = new TinyDB(getApplicationContext());
         tinyTitledb = new TinyDB(getApplicationContext());
@@ -121,6 +102,7 @@ public class ListNotesActivity extends AppCompatActivity {
         checkNightMode();
     }
 
+    // check if user used night mode or not from settings
     private void checkNightMode() {
 
         prefs = this.getSharedPreferences("NightModeKey", Context.MODE_PRIVATE);
@@ -178,6 +160,7 @@ public class ListNotesActivity extends AppCompatActivity {
         }
     }
 
+    // what will happen if user click on note to read or edit it
     private void clickEditNote() {
         addNote_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -202,6 +185,7 @@ public class ListNotesActivity extends AppCompatActivity {
         });
     }
 
+    // what will happen if user click a long click on note to delete(till now) it
     private void longClickDeletable() {
 
 
@@ -381,6 +365,7 @@ public class ListNotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // method to refresh the list
     private void refreshMenu() {
 
         checkNightMode();
