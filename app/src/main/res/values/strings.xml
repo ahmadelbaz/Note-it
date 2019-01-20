@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">Remember</string>
-    <string name="channel_name">Primary Channel</string>
-    <string name="channel_description">This is Channel</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="newUser1">Not a Member yet?</string>
+    <string name="newUser2">Sign Up here.</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">register</string>
+    <string name="oldUser1">Already have account ?</string>
+    <string name="oldUser2">Login here .</string>
+    <string name="home">Home</string>
+    <string name="forget_your_password">Forget your password?</string>
+    <string name="reset_password">Reset password</string>
+
 
 </resources>

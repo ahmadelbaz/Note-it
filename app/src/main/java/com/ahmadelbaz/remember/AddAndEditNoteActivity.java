@@ -59,10 +59,15 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
     String inMessage;
     String inTitleMessage;
 
+    int dayOfWeek;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_and_edit_note);
+
+        Calendar c = Calendar.getInstance();
+        dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
         scrollView = findViewById(R.id.scrollView);
 
@@ -112,7 +117,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         Calendar c = Calendar.getInstance();
 
-        String date = c.get(Calendar.YEAR) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.DAY_OF_MONTH);
+        String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
         String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
 
         String dateAndTime = date + " - " + time;
@@ -212,7 +217,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             if (strdata.equals("OldNote")) {
                 getMenuInflater().inflate(R.menu.edit, menu);
             } else if (strdata.equals("NewNote")) {
-
                 getMenuInflater().inflate(R.menu.lock, menu);
             }
         }
@@ -258,6 +262,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 alarmTitle.requestFocus();
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+
                 //Add Attributes of Alertdialog.builder
                 new AlertDialog.Builder(AddAndEditNoteActivity.this)
                         .setTitle("Set Alarm Title")
@@ -265,19 +270,38 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                         .setPositiveButton("Next", new DialogInterface.OnClickListener() {
 
 
+                            String daysList[] = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
+                                new AlertDialog.Builder(AddAndEditNoteActivity.this)
+                                        .setTitle("Set Day")
+                                        .setSingleChoiceItems(daysList, Calendar.DAY_OF_WEEK, null)
+                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
 
-                                inMessage = alarmContent.getText().toString();
-                                inTitleMessage = alarmTitle.getText().toString();
 
-                                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                                                dialog.dismiss();
+                                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+
+                                                dayOfWeek = selectedPosition;
 
 
-                                // Display Fragment of timepicker
-                                DialogFragment timePicker = new TimePickerFragment();
-                                timePicker.show(getFragmentManager(), "timePicker");
+                                                inMessage = alarmContent.getText().toString();
+                                                inTitleMessage = alarmTitle.getText().toString();
+
+                                                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+                                                // Display Fragment of timepicker
+                                                DialogFragment timePicker = new TimePickerFragment();
+                                                timePicker.show(getFragmentManager(), "timePicker");
+
+
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", null)
+                                        .show();
 
                             }
                         })
@@ -320,7 +344,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 Calendar c = Calendar.getInstance();
 
-                String date = c.get(Calendar.YEAR) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.DAY_OF_MONTH);
+                String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
                 String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
 
                 saveButtonPressed(noteText_editText, noteTitle_editText, notesList, "MyUsers", newText, 1);
@@ -352,6 +376,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 }
 
+                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+                startActivity(in);
                 finish();
                 return true;
         }
@@ -363,7 +389,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         Calendar c = Calendar.getInstance();
 
-        String date = c.get(Calendar.YEAR) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.DAY_OF_MONTH);
+        String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
         String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
 
         String dateAndTime = date + " - " + time;
@@ -383,6 +409,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 arrayAdapter.notifyDataSetChanged();
 
+                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+                startActivity(in);
                 finish();
             }
 
@@ -398,6 +426,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                     editedList.remove(editedList.size() - 1);
                     arrayAdapter.notifyDataSetChanged();
 
+                    Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+                    startActivity(in);
                     finish();
                 }
             }
@@ -413,6 +443,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
             tinyCalenderdb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
 
+            Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+            startActivity(in);
             finish();
         }
     }
@@ -438,6 +470,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 arrayAdapter.notifyDataSetChanged();
 
+                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+                startActivity(in);
                 finish();
             }
 
@@ -453,6 +487,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                     editedList.remove(editedList.size() - 1);
                     arrayAdapter.notifyDataSetChanged();
 
+                    Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+                    startActivity(in);
                     finish();
                 }
             }
@@ -469,6 +505,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
             tinyCalenderdb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
 
+            Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+            startActivity(in);
             finish();
         }
     }
@@ -490,6 +528,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             }
         }
 
+        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+        startActivity(in);
         finish();
     }
 
@@ -498,7 +538,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         Calendar c = Calendar.getInstance();
 
-        String date = c.get(Calendar.YEAR) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.DAY_OF_MONTH);
+        String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
         String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
 
         String dateAndTime = date + " - " + time;
@@ -514,6 +554,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             Toast.makeText(getApplicationContext(), "Note Saved", Toast.LENGTH_SHORT).show();
         }
 
+        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+        startActivity(in);
         finish();
     }
 
@@ -533,6 +575,8 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         }
 
+        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
+        startActivity(in);
         finish();
     }
 
@@ -564,14 +608,17 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
     }
 
     @Override
-    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+    public void onTimeSet(TimePicker timePicker, int hour, int minutes) {
 
         //Intent to Device Alarm with your data(Time and Note title)
         Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
         intent.putExtra(AlarmClock.EXTRA_MESSAGE, inTitleMessage);
-        intent.putExtra(AlarmClock.EXTRA_HOUR, i);
-        intent.putExtra(AlarmClock.EXTRA_MINUTES, i1);
+        intent.putExtra(AlarmClock.EXTRA_HOUR, hour);
+        intent.putExtra(AlarmClock.EXTRA_MINUTES, minutes);
+        intent.putExtra(AlarmClock.EXTRA_DAYS, dayOfWeek);
+        intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
         startActivity(intent);
 
     }
+
 }

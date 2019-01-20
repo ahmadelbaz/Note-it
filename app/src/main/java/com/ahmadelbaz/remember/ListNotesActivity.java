@@ -24,6 +24,8 @@ import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,8 @@ public class ListNotesActivity extends AppCompatActivity {
     //instantiation
 
     SharedPreferences prefs;
+
+    SharedPreferences signPrefs;
 
     android.support.design.widget.CoordinatorLayout menu_background;
 
@@ -63,6 +67,12 @@ public class ListNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_notes);
 
+        prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
+
+        signPrefs = this.getSharedPreferences("signInAndOut", Context.MODE_PRIVATE);
+
+        prefs.edit().putInt("backupOrRestore", 0).commit();
+
         menu_background = findViewById(R.id.menu_background);
 
         noteText_editText = (EditText) findViewById(R.id.noteText_editText);
@@ -79,6 +89,7 @@ public class ListNotesActivity extends AppCompatActivity {
                 Intent intent = new Intent(ListNotesActivity.this, AddAndEditNoteActivity.class);
                 intent.putExtra("Unique", "NewNote");
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -180,6 +191,7 @@ public class ListNotesActivity extends AppCompatActivity {
                 intent.putExtra("Unique", "OldNote");
 
                 startActivity(intent);
+                finish();
 
             }
         });
@@ -230,6 +242,13 @@ public class ListNotesActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.refresh, menu);
         getMenuInflater().inflate(R.menu.search, menu);
         getMenuInflater().inflate(R.menu.settings, menu);
+        getMenuInflater().inflate(R.menu.backupandrestore, menu);
+
+        if (signPrefs.getBoolean("signInOrOut", false)) {
+            getMenuInflater().inflate(R.menu.sign_out, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.sign_in, menu);
+        }
 
         MenuItem item = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
@@ -348,10 +367,12 @@ public class ListNotesActivity extends AppCompatActivity {
                                 tinydb.remove("MyUsers");
                                 tinyTitledb.remove("MyAddressUsers");
                                 tinyTitledb.remove("MyCalenderUsers");
+                                refreshMenu();
                             }
                         })
                         .setNegativeButton("No", null)
                         .show();
+                return true;
 
             case R.id.refreshList:
                 refreshMenu();
@@ -360,7 +381,104 @@ public class ListNotesActivity extends AppCompatActivity {
             case R.id.settingsOption:
                 Intent intent = new Intent(ListNotesActivity.this, Settings.class);
                 startActivity(intent);
+                finish();
                 return true;
+
+            case R.id.backupAndRestore:
+
+                prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
+
+                ////////////////////////////////
+
+                String[] arrayStrings = {"Backup", "Restore"};
+
+                new AlertDialog.Builder(ListNotesActivity.this)
+                        .setTitle("Choose Option")
+                        .setSingleChoiceItems(arrayStrings, 0, null)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                // Do something useful withe the position of the selected radio button
+
+                                if (selectedPosition == 0) {
+
+
+                                    new AlertDialog.Builder(ListNotesActivity.this)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Are You Sure?")
+                                            .setMessage("If you have any old data in Backup it will be deleted, " +
+                                                    "Do you want to continue?")
+                                            .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    //TODO: continue to Backup notes
+                                                    prefs.edit().putInt("backupOrRestore", 1).commit();
+                                                    Intent intent = new Intent(ListNotesActivity.this, LoginActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            })
+                                            .setNegativeButton("Stop", null)
+                                            .show();
+
+                                } else if (selectedPosition == 1) {
+
+                                    new AlertDialog.Builder(ListNotesActivity.this)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Are You Sure?")
+                                            .setMessage("If you have any old data in Restore List it will be deleted, " +
+                                                    "Do you want to continue?")
+                                            .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    //TODO: continue to Restore notes
+                                                    prefs.edit().putInt("backupOrRestore", 2).commit();
+                                                    Intent intent = new Intent(ListNotesActivity.this, LoginActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            })
+                                            .setNegativeButton("Stop", null)
+                                            .show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                ////////////////////////////////
+
+                return true;
+            case R.id.sign_out:
+
+                if (signPrefs.getBoolean("signInOrOut", false)) {
+                    item.setTitle("Sign in");
+                    FirebaseAuth.getInstance().signOut();
+                    signPrefs.edit().putBoolean("signInOrOut", false).commit();
+
+                } else {
+
+                    Intent signIntent = new Intent(ListNotesActivity.this, LoginActivity.class);
+                    startActivity(signIntent);
+                    finish();
+                }
+
+                return true;
+
+            case R.id.sign_in:
+
+                if (signPrefs.getBoolean("signInOrOut", false)) {
+                    item.setTitle("Sign in");
+                    FirebaseAuth.getInstance().signOut();
+                    signPrefs.edit().putBoolean("signInOrOut", false).commit();
+
+                } else {
+                    Intent signIntent = new Intent(ListNotesActivity.this, LoginActivity.class);
+                    startActivity(signIntent);
+                    finish();
+                }
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }

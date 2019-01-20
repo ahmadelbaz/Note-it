@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ahmadelbaz.remember"
+    package="com.ahmadelbaz.remember">
 
-    >
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,10 +21,12 @@
         <activity
             android:name=".AddAndEditNoteActivity"
             android:parentActivityName=".ListNotesActivity" />
-        <activity android:name=".Settings"
-            android:parentActivityName=".ListNotesActivity"></activity>
-
-
+        <activity
+            android:name=".Settings"
+            android:parentActivityName=".ListNotesActivity" />
+        <activity android:name=".RestoredList" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>
