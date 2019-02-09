@@ -13,7 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,9 +34,9 @@ public class RestoredList extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    SharedPreferences prefs;
+    private FirebaseAuth mAuth;
 
-    SharedPreferences userKeyPrefs;
+    SharedPreferences prefs;
 
     ListView restoredListView;
 
@@ -45,12 +48,15 @@ public class RestoredList extends AppCompatActivity {
     List<String> restoredTextList;
     List<String> restoredTimeList;
 
-    private String USERKEY;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_notes);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         fab = findViewById(R.id.fab);
 
@@ -59,10 +65,6 @@ public class RestoredList extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
-
-        userKeyPrefs = this.getSharedPreferences("userIdKey", Context.MODE_PRIVATE);
-
-        USERKEY = userKeyPrefs.getString("addUserIdKey", null);
 
         restoredListView = findViewById(R.id.addNote_listView);
 
@@ -75,16 +77,16 @@ public class RestoredList extends AppCompatActivity {
         if (prefs.getInt("backupOrRestore", 0) == 1) {
             // Backup the list in three children (Title - Text - Time) and delete any old backup data
 
-            mDatabase.child("" + USERKEY).removeValue();
+            mDatabase.child("Backup").child("" + currentUser.getUid()).removeValue();
 
             for (int n = 0; n < notesAddressList.size(); n++) {
-                mDatabase.child("" + USERKEY).child("noteTitle").child("" + n).setValue(notesAddressList.get(n));
+                mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteTitle").child("" + n).setValue(notesAddressList.get(n));
             }
             for (int n = 0; n < notesList.size(); n++) {
-                mDatabase.child("" + USERKEY).child("noteText").child("" + n).setValue(notesList.get(n));
+                mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteText").child("" + n).setValue(notesList.get(n));
             }
             for (int n = 0; n < notesCalenderList.size(); n++) {
-                mDatabase.child("" + USERKEY).child("noteTime").child("" + n).setValue(notesCalenderList.get(n));
+                mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteTime").child("" + n).setValue(notesCalenderList.get(n));
             }
 
             Intent n = new Intent(RestoredList.this, ListNotesActivity.class);
@@ -94,9 +96,9 @@ public class RestoredList extends AppCompatActivity {
         } else if (prefs.getInt("backupOrRestore", 0) == 2) {
             // Restore data from backup to restored list
 
-            DatabaseReference titleRef = mDatabase.child("" + USERKEY).child("noteTitle");
-            DatabaseReference textRef = mDatabase.child("" + USERKEY).child("noteText");
-            DatabaseReference timeRef = mDatabase.child("" + USERKEY).child("noteTime");
+            DatabaseReference titleRef = mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteTitle");
+            DatabaseReference textRef = mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteText");
+            DatabaseReference timeRef = mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteTime");
 
             // Event listener to add title value to the list
             ValueEventListener eventTitleListener = new ValueEventListener() {

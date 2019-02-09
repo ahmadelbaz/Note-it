@@ -89,7 +89,6 @@ public class ListNotesActivity extends AppCompatActivity {
                 Intent intent = new Intent(ListNotesActivity.this, AddAndEditNoteActivity.class);
                 intent.putExtra("Unique", "NewNote");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -191,7 +190,6 @@ public class ListNotesActivity extends AppCompatActivity {
                 intent.putExtra("Unique", "OldNote");
 
                 startActivity(intent);
-                finish();
 
             }
         });
@@ -487,7 +485,6 @@ public class ListNotesActivity extends AppCompatActivity {
     private void refreshMenu() {
 
         checkNightMode();
-
         onResume();
         arrayAdapter.notifyDataSetChanged();
     }

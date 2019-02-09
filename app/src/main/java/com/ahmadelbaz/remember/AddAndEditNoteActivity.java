@@ -376,8 +376,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 }
 
-                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-                startActivity(in);
                 finish();
                 return true;
         }
@@ -409,8 +407,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 arrayAdapter.notifyDataSetChanged();
 
-                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-                startActivity(in);
                 finish();
             }
 
@@ -426,8 +422,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                     editedList.remove(editedList.size() - 1);
                     arrayAdapter.notifyDataSetChanged();
 
-                    Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-                    startActivity(in);
                     finish();
                 }
             }
@@ -443,14 +437,33 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
             tinyCalenderdb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
 
-            Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-            startActivity(in);
             finish();
         }
     }
 
     // Method to save title and text
     private void saveButtonPressed(EditText editedText, EditText secondaryEdit, List<String> editedList, String editableString, String dbKey, int a) {
+
+        Calendar c = Calendar.getInstance();
+
+        String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
+        String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
+
+        String dateAndTime = date + " - " + time;
+
+
+        if(noteTitle_editText.getText().toString().isEmpty()){
+
+            if(noteText_editText.getText().toString().length() <= 40){
+                noteTitle_editText.setText("" + noteText_editText.getText().toString());
+            } else if(noteText_editText.getText().toString().length() > 40){
+                String newTitle = "";
+                for(int n = 0; n <= 39; n++){
+                    newTitle += "" + noteText_editText.getText().toString().charAt(n);
+                }
+                noteTitle_editText.setText(newTitle + "...");
+            }
+        }
 
         if (a == 1) {
             editableString = newText;
@@ -470,8 +483,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 arrayAdapter.notifyDataSetChanged();
 
-                Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-                startActivity(in);
                 finish();
             }
 
@@ -487,8 +498,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                     editedList.remove(editedList.size() - 1);
                     arrayAdapter.notifyDataSetChanged();
 
-                    Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-                    startActivity(in);
                     finish();
                 }
             }
@@ -505,8 +514,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
             tinyCalenderdb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
 
-            Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-            startActivity(in);
             finish();
         }
     }
@@ -528,8 +535,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             }
         }
 
-        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-        startActivity(in);
         finish();
     }
 
@@ -554,8 +559,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
             Toast.makeText(getApplicationContext(), "Note Saved", Toast.LENGTH_SHORT).show();
         }
 
-        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-        startActivity(in);
         finish();
     }
 
@@ -575,8 +578,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         }
 
-        Intent in = new Intent(AddAndEditNoteActivity.this, ListNotesActivity.class);
-        startActivity(in);
         finish();
     }
 

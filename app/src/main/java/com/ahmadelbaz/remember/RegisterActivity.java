@@ -8,37 +8,50 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-
+import android.widget.Button;
+import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    SharedPreferences signPrefs;
+    DatabaseReference ref;
 
-    SharedPreferences userKeyPrefs;
+    SharedPreferences signPrefs;
 
     private FirebaseAuth mAuth;
 
     TextInputEditText register_email;
+    TextInputEditText register_username;
     TextInputEditText register_password;
     TextInputEditText register_confirm_password;
+
+    Button loginBtn;
+
+    boolean taskS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        signPrefs = this.getSharedPreferences("signInAndOut", Context.MODE_PRIVATE);
+        ref = FirebaseDatabase.getInstance().getReference();
 
-        userKeyPrefs = this.getSharedPreferences("userIdKey", Context.MODE_PRIVATE);
+        signPrefs = this.getSharedPreferences("signInAndOut", Context.MODE_PRIVATE);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
         register_email = (TextInputEditText) findViewById(R.id.register_email);
+        register_username = (TextInputEditText) findViewById(R.id.register_username);
         register_password = (TextInputEditText) findViewById(R.id.register_password);
         register_confirm_password = (TextInputEditText) findViewById(R.id.register_confirm_password);
     }
@@ -46,11 +59,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void Register(View view) {
 
-        String enteredEmail;
-        String enteredPassword;
+        final String enteredEmail;
+        final String enteredUsername;
+        final String enteredPassword;
         String enteredConfirmPassword;
 
         enteredEmail = register_email.getText().toString();
+        enteredUsername = register_username.getText().toString();
         enteredPassword = register_password.getText().toString();
         enteredConfirmPassword = register_confirm_password.getText().toString();
 
@@ -58,6 +73,18 @@ public class RegisterActivity extends AppCompatActivity {
         if (enteredEmail.isEmpty() || enteredEmail.equals(" ")) {
             register_email.setError("Fill here please");
             return;
+        }
+
+        if (enteredUsername.isEmpty() || enteredUsername.equals(" ")) {
+            register_username.setError("Fill here please");
+            return;
+        }
+
+        for (int n = 0; n < enteredUsername.length(); n++) {
+            if (!Character.isLetterOrDigit(enteredUsername.charAt(n))) {
+                register_username.setError("Cannot contain space or symbol");
+                return;
+            }
         }
 
         if (enteredPassword.isEmpty() || enteredPassword.equals(" ")) {
@@ -80,20 +107,57 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
-        mAuth.createUserWithEmailAndPassword(enteredEmail, enteredPassword)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userKeyPrefs.edit().putString("addUserIdKey", "" + mAuth.getCurrentUser().getUid()).commit();
-                            signPrefs.edit().putBoolean("signInOrOut", true).commit();
-                            Intent intent = new Intent(RegisterActivity.this, RestoredList.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                        }
-                    }
-                });
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        ref.child("users").child("AllUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(enteredUsername)) {
+                    // use "username" already exists
+                    // Let the user know he needs to pick another username.
+                    register_username.setError("User name is already exists");
+                    onStop();
+                    return;
+                } else {
+                    // User does not exist. NOW call createUserWithEmailAndPassword
+                    mAuth.createUserWithEmailAndPassword(enteredEmail, enteredPassword)
+                            .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+
+                                        // getuser
+                                        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                                        ref.child("users").child("username").child("" + currentUser.getUid()).setValue(enteredUsername);
+                                        ref.child("users").child("AllUsers").child(enteredUsername).setValue(true);
+                                        Toast.makeText(RegisterActivity.this, register_username.getText().toString() + " Signed in",
+                                                Toast.LENGTH_SHORT).show();
+                                        signPrefs.edit().putBoolean("signInOrOut", true).commit();
+                                        Intent intent = new Intent(RegisterActivity.this, RestoredList.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                    }
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+       /* if (taskS) {
+        //    Toast.makeText(RegisterActivity.this, "" + taskS, Toast.LENGTH_SHORT).show();
+
+        } else {
+        //    Toast.makeText(RegisterActivity.this, "" + taskS, Toast.LENGTH_SHORT).show();
+            return;
+        }*/
+
     }
 
     public void openLogin(View view) {
