@@ -14,6 +14,8 @@
     <string name="forget_your_password">Forget your password?</string>
     <string name="reset_password">Reset password</string>
     <string name="user_name">User name</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="welcome">Welcome</string>
 
 
 </resources>

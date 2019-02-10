@@ -284,7 +284,6 @@ public class ListNotesActivity extends AppCompatActivity {
 
 
                     // Turn to Night mode
-
                     menu_background.setBackgroundColor(Color.BLACK);
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -310,7 +309,6 @@ public class ListNotesActivity extends AppCompatActivity {
                 } else {
 
                     //Turn to light mode
-
                     menu_background.setBackgroundColor(Color.parseColor("#FFF9C4"));
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
