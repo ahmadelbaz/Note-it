@@ -2,18 +2,51 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF9C4"
-    android:id="@+id/menu_background"
     tools:context=".ListNotesActivity">
 
-        <ListView
-            android:id="@+id/addNote_listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-        </ListView>
+    <RelativeLayout
+        android:id="@+id/emptyView_relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/emptyNote_imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/note" />
+
+        <TextView
+            android:id="@+id/emptyList_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Empty List ..." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/emptyNote_imageView"
+            android:layout_centerHorizontal="true"
+            android:onClick="addNewNote"
+            android:text="Add Note ?"
+            android:textColor="#5B33FF"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@+id/addNote_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
     <include layout="@layout/content_main2" />
 
@@ -21,9 +54,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:clickable="true"
         app:backgroundTint="#212121"
         app:srcCompat="@android:drawable/ic_input_add" />
 

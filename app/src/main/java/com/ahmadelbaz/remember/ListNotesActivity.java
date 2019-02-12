@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,8 @@ public class ListNotesActivity extends AppCompatActivity {
 
     boolean doubleBackToExitPressedOnce = false;
 
+    RelativeLayout emptyView_relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,8 @@ public class ListNotesActivity extends AppCompatActivity {
         prefs.edit().putInt("backupOrRestore", 0).commit();
 
         menu_background = findViewById(R.id.menu_background);
+
+        emptyView_relativeLayout = findViewById(R.id.emptyView_relativeLayout);
 
         noteText_editText = (EditText) findViewById(R.id.noteText_editText);
         noteTitle_editText = (EditText) findViewById(R.id.noteTitle_editText);
@@ -110,6 +115,17 @@ public class ListNotesActivity extends AppCompatActivity {
         longClickDeletable();
 
         checkNightMode();
+
+        checkEmptyView();
+    }
+
+    // Check for empty view
+    private void checkEmptyView() {
+        if (notesAddressList.size() <= 0) {
+            emptyView_relativeLayout.setVisibility(View.VISIBLE);
+        } else {
+            emptyView_relativeLayout.setVisibility(View.GONE);
+        }
     }
 
     // check if user used night mode or not from settings
@@ -195,53 +211,94 @@ public class ListNotesActivity extends AppCompatActivity {
         });
     }
 
-    // what will happen if user click a long click on note to delete(till now) it
+    // what will happen if user click a long click on note to delete or make the note as favorite.
     private void longClickDeletable() {
-
 
         addNote_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+            public boolean onItemLongClick(final AdapterView<?> arg0, View arg1,
                                            final int pos, long id) {
 
-                new AlertDialog.Builder(ListNotesActivity.this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Are You Sure?")
-                        .setMessage("Do You Want to Delete this Note?")
-                        .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                tinydb.remove("MyUsers");
-                                tinyTitledb.remove("MyAddressUsers");
-                                tinyTitledb.remove("MyCalenderUsers");
-                                notesList.remove(pos);
-                                notesAddressList.remove(pos);
-                                notesCalenderList.remove(pos);
-                                arrayAdapter.notifyDataSetChanged();
+                String[] arrayStrings = {"Favorite", "Delete"};
 
-                                tinydb.putListString("MyUsers", (ArrayList<String>) notesList);
-                                tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
-                                tinyTitledb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
-                                refreshMenu();
+                new AlertDialog.Builder(ListNotesActivity.this)
+                        .setTitle("Choose Option")
+                        .setSingleChoiceItems(arrayStrings, 0, null)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                // Do something useful withe the position of the selected radio button
+
+                                if (selectedPosition == 0) {
+
+
+                                    new AlertDialog.Builder(ListNotesActivity.this)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Are You Sure?")
+                                            .setMessage("You will mark this note as Favorite, Do you want to continue?")
+                                            .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    String newTitle = notesAddressList.get(pos);
+
+                                                    notesAddressList.set(pos, newTitle + " \uD83C\uDF38 \uD83C\uDF38");
+                                                    refreshMenu();
+                                                    tinyTitledb.remove("MyAddressUsers");
+                                                    tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
+                                                    refreshMenu();
+                                                }
+                                            })
+                                            .setNegativeButton("Cancel", null)
+                                            .show();
+
+                                } else if (selectedPosition == 1) {
+
+                                    new AlertDialog.Builder(ListNotesActivity.this)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Are You Sure?")
+                                            .setMessage("Do You Want to Delete this Note?")
+                                            .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                    tinydb.remove("MyUsers");
+                                                    tinyTitledb.remove("MyAddressUsers");
+                                                    tinyTitledb.remove("MyCalenderUsers");
+                                                    notesList.remove(pos);
+                                                    notesAddressList.remove(pos);
+                                                    notesCalenderList.remove(pos);
+                                                    arrayAdapter.notifyDataSetChanged();
+
+                                                    tinydb.putListString("MyUsers", (ArrayList<String>) notesList);
+                                                    tinyTitledb.putListString("MyAddressUsers", (ArrayList<String>) notesAddressList);
+                                                    tinyTitledb.putListString("MyCalenderUsers", (ArrayList<String>) notesCalenderList);
+                                                    refreshMenu();
+                                                }
+                                            })
+                                            .setNegativeButton("No", null)
+                                            .show();
+                                }
                             }
                         })
-                        .setNegativeButton("No", null)
+                        .setNegativeButton("Cancel", null)
                         .show();
-
                 return true;
             }
         });
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.add_note_menu, menu);
+        getMenuInflater().inflate(R.menu.delete_all_notes, menu);
         getMenuInflater().inflate(R.menu.refresh, menu);
         getMenuInflater().inflate(R.menu.search, menu);
-        getMenuInflater().inflate(R.menu.settings, menu);
         getMenuInflater().inflate(R.menu.backupandrestore, menu);
-
+        getMenuInflater().inflate(R.menu.received_notes, menu);
+        getMenuInflater().inflate(R.menu.settings, menu);
         if (signPrefs.getBoolean("signInOrOut", false)) {
             getMenuInflater().inflate(R.menu.sign_out, menu);
         } else {
@@ -374,12 +431,6 @@ public class ListNotesActivity extends AppCompatActivity {
                 refreshMenu();
                 return true;
 
-            case R.id.settingsOption:
-                Intent intent = new Intent(ListNotesActivity.this, Settings.class);
-                startActivity(intent);
-                finish();
-                return true;
-
             case R.id.backupAndRestore:
 
                 prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
@@ -423,8 +474,7 @@ public class ListNotesActivity extends AppCompatActivity {
                                     new AlertDialog.Builder(ListNotesActivity.this)
                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                             .setTitle("Are You Sure?")
-                                            .setMessage("If you have any old data in Restore List it will be deleted, " +
-                                                    "Do you want to continue?")
+                                            .setMessage("You will restore any saved data, Do you want to continue?")
                                             .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -445,6 +495,23 @@ public class ListNotesActivity extends AppCompatActivity {
                 ////////////////////////////////
 
                 return true;
+
+            case R.id.receivedNotes:
+
+                prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
+
+                prefs.edit().putInt("backupOrRestore", 3).commit();
+                Intent in = new Intent(ListNotesActivity.this, LoginActivity.class);
+                startActivity(in);
+                finish();
+
+                return true;
+
+            case R.id.settingsOption:
+                Intent intent = new Intent(ListNotesActivity.this, Settings.class);
+                startActivity(intent);
+                return true;
+
             case R.id.sign_out:
 
                 if (signPrefs.getBoolean("signInOrOut", false)) {
@@ -479,12 +546,25 @@ public class ListNotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void addNewNote(View view) {
+        Intent intent = new Intent(ListNotesActivity.this, AddAndEditNoteActivity.class);
+        intent.putExtra("Unique", "NewNote");
+        startActivity(intent);
+    }
+
+
     // method to refresh the list
     private void refreshMenu() {
-
+        checkEmptyView();
         checkNightMode();
         onResume();
         arrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkEmptyView();
     }
 
     @Override
@@ -509,4 +589,5 @@ public class ListNotesActivity extends AppCompatActivity {
         }
         return false;
     }
+
 }

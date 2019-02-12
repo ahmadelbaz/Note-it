@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -48,6 +49,10 @@ public class RestoredList extends AppCompatActivity {
     List<String> restoredTextList;
     List<String> restoredTimeList;
 
+    String UName;
+
+    List<String> uniqueCodeList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,15 +61,17 @@ public class RestoredList extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Get current username
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         fab = findViewById(R.id.fab);
 
         fab.setVisibility(View.INVISIBLE);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
         prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
+
 
         restoredListView = findViewById(R.id.addNote_listView);
 
@@ -151,6 +158,92 @@ public class RestoredList extends AppCompatActivity {
             textRef.addListenerForSingleValueEvent(eventTextListener);
             timeRef.addListenerForSingleValueEvent(eventTimeListener);
 
+        } else if (prefs.getInt("backupOrRestore", 0) == 3) {
+
+            //   refresh();
+
+            prefs = this.getSharedPreferences("userNameKey", Context.MODE_PRIVATE);
+
+
+            UName = prefs.getString("userName", "guest");
+
+            // Event listener to add title value to the list
+            // First we wanna get the unique code
+
+            DatabaseReference uniqueCodeRef = mDatabase.child("uniqueCode").child("" + UName);
+
+            uniqueCodeList = new ArrayList<String>();
+
+            ValueEventListener eventUniqueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                        uniqueCodeList.add(ds.getKey());
+                        DatabaseReference titleRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTitle");
+                        DatabaseReference textRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteText");
+                        DatabaseReference timeRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTime");
+
+                        // Event listener to add title value to the list
+                        ValueEventListener eventTitleListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                restoredTitleList.add(dataSnapshot.getValue().toString());
+                                restoredArrayAdapter = new ArrayAdapter<String>(RestoredList.this,
+                                        android.R.layout.simple_dropdown_item_1line, restoredTitleList);
+                                restoredListView.setAdapter(restoredArrayAdapter);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        };
+
+                        // Event listener to add text value to the list
+                        ValueEventListener eventTextListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                restoredTextList.add(dataSnapshot.getValue().toString());
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        };
+
+                        // Event listener to add time value to the list
+                        ValueEventListener eventTimeListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                restoredTimeList.add(dataSnapshot.getValue().toString());
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        };
+
+                        titleRef.addListenerForSingleValueEvent(eventTitleListener);
+                        textRef.addListenerForSingleValueEvent(eventTextListener);
+                        timeRef.addListenerForSingleValueEvent(eventTimeListener);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+
+            uniqueCodeRef.addListenerForSingleValueEvent(eventUniqueListener);
+
         } else {
             Intent in = new Intent(RestoredList.this, ListNotesActivity.class);
             startActivity(in);
@@ -160,7 +253,8 @@ public class RestoredList extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.save, menu);
+        getMenuInflater().inflate(R.menu.save_received, menu);
+        getMenuInflater().inflate(R.menu.delete_all_notes, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -168,13 +262,12 @@ public class RestoredList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.saveNote:
+            case R.id.savereceivedNotes:
 
                 new AlertDialog.Builder(RestoredList.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Are You Sure?")
-                        .setMessage("You will send the Restored notes to the main list, " +
-                                "But this restored list will be deleted")
+                        .setMessage("You will send the Restored notes to the main list")
                         .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -205,9 +298,46 @@ public class RestoredList extends AppCompatActivity {
                         .setNegativeButton("Cancel", null)
                         .show();
                 return true;
+
+            case R.id.deleteAllNotes:
+
+                deleteAllNotes();
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // what will happen if user click a long click on note to delete(till now) it.
+    private void deleteAllNotes() {
+
+        prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
+
+        if (prefs.getInt("backupOrRestore", 0) == 3) {
+
+            new android.app.AlertDialog.Builder(RestoredList.this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Are You Sure?")
+                    .setMessage("Do You Want to Delete All Note?")
+                    .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            restoredTextList.clear();
+                            restoredTitleList.clear();
+                            restoredTimeList.clear();
+                            restoredArrayAdapter.notifyDataSetChanged();
+
+                            Toast.makeText(RestoredList.this, "" + UName, Toast.LENGTH_SHORT).show();
+                            mDatabase.child("message").child("" + UName).removeValue();
+                            mDatabase.child("uniqueCode").child("" + UName).removeValue();
+
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }
     }
 
     @Override

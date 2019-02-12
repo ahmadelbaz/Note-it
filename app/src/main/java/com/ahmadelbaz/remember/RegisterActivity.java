@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -131,6 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                         ref.child("users").child("username").child("" + currentUser.getUid()).setValue(enteredUsername);
                                         ref.child("users").child("AllUsers").child(enteredUsername).setValue(true);
+                                        ref.child("uniqueCode").child("" + enteredUsername);
                                         Toast.makeText(RegisterActivity.this, register_username.getText().toString() + " Signed in",
                                                 Toast.LENGTH_SHORT).show();
                                         signPrefs.edit().putBoolean("signInOrOut", true).commit();
@@ -149,14 +151,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
-       /* if (taskS) {
-        //    Toast.makeText(RegisterActivity.this, "" + taskS, Toast.LENGTH_SHORT).show();
-
-        } else {
-        //    Toast.makeText(RegisterActivity.this, "" + taskS, Toast.LENGTH_SHORT).show();
-            return;
-        }*/
 
     }
 

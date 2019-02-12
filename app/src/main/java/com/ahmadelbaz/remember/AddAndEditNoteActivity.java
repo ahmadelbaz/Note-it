@@ -86,8 +86,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Check if the user wrote his own username
-
+        // Get current username
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         DatabaseReference UNameRef = mDatabase.child("users").child("username").child(currentUser.getUid() + "");
@@ -289,8 +288,6 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 alarmContent.setText("");
                 alarmContent.requestFocus();
 
-                LinearLayout newLayout = new LinearLayout(this);
-
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.VERTICAL,
@@ -305,7 +302,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
 
-                //Add Attributes of Alertdialog.builder
+                //Add Attributes of AlertDialog.builder
                 new AlertDialog.Builder(AddAndEditNoteActivity.this)
                         .setTitle("Set Alarm Title")
                         .setView(alarmTitle)
@@ -692,6 +689,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                         usernameOfReceiver = sendNoteUsername.getText().toString();
 
 
+                        // Check if the user wrote his own username
                         if (usernameOfReceiver.equals(UName)) {
 
                             new AlertDialog.Builder(AddAndEditNoteActivity.this)
@@ -703,6 +701,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                             Toast.makeText(AddAndEditNoteActivity.this, "You Can't send a message to yourself", Toast.LENGTH_SHORT).show();
 
+                            // Check if the user let the input empty
                         } else if (usernameOfReceiver.isEmpty()) {
 
                             new AlertDialog.Builder(AddAndEditNoteActivity.this)
@@ -748,6 +747,5 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-
     }
 }

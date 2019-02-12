@@ -80,9 +80,11 @@ public class Settings extends AppCompatActivity {
         if(NightModeIsOn){
             setting_layout.setBackgroundColor(Color.BLACK);
             nightMode_switch.setTextColor(Color.WHITE);
+            welcome_textView.setTextColor(Color.WHITE);
         } else {
             setting_layout.setBackgroundColor(Color.parseColor("#FFF9C4"));
             nightMode_switch.setTextColor(Color.BLACK);
+            welcome_textView.setTextColor(Color.BLACK);
         }
 
 
@@ -95,9 +97,11 @@ public class Settings extends AppCompatActivity {
                 if(b){
                     setting_layout.setBackgroundColor(Color.BLACK);
                     nightMode_switch.setTextColor(Color.WHITE);
+                    welcome_textView.setTextColor(Color.WHITE);
                 } else {
                     setting_layout.setBackgroundColor(Color.parseColor("#FFF9C4"));
                     nightMode_switch.setTextColor(Color.BLACK);
+                    welcome_textView.setTextColor(Color.BLACK);
                 }
             }
         });

@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
 
     SharedPreferences userKeyPrefs;
 
+    SharedPreferences userNamePrefs;
+
     private FirebaseAuth mAuth;
 
     TextInputEditText login_email;
@@ -40,6 +41,10 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseReference ref;
 
     FirebaseUser currentUser;
+
+    SharedPreferences prefs;
+
+    String UName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
 
         userKeyPrefs = this.getSharedPreferences("userIdKey", Context.MODE_PRIVATE);
 
+        userNamePrefs = this.getSharedPreferences("userNameKey", Context.MODE_PRIVATE);
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -63,7 +70,26 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
 
+
         if (currentUser != null) {
+
+            DatabaseReference UNameRef = ref.child("users").child("username").child(currentUser.getUid() + "");
+
+            ValueEventListener eventUserListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    UName = dataSnapshot.getValue().toString();
+
+                    userNamePrefs.edit().putString("userName", UName).commit();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+
+            UNameRef.addValueEventListener(eventUserListener);
 
             Intent intent = new Intent(LoginActivity.this, RestoredList.class);
             startActivity(intent);
@@ -104,33 +130,23 @@ public class LoginActivity extends AppCompatActivity {
                             // Get username
                             currentUser = mAuth.getCurrentUser();
 
-                            DatabaseReference UNameRef = ref.child("users").child("username").child(currentUser.getUid() + "");
+                            prefs = LoginActivity.this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
 
-                            ValueEventListener eventUserListener = new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (prefs.getInt("backupOrRestore", 0) == 3) {
+                                Intent intent = new Intent(LoginActivity.this, ListNotesActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
 
-                                    String UName = dataSnapshot.getValue().toString();
-                                    Toast.makeText(LoginActivity.this, UName + " Signed in",
-                                            Toast.LENGTH_SHORT).show();
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                }
-                            };
-
-                            UNameRef.addValueEventListener(eventUserListener);
-
-
+                                Intent intent = new Intent(LoginActivity.this, RestoredList.class);
+                                startActivity(intent);
+                                finish();
+                            }
                             userKeyPrefs.edit().putString("addUserIdKey", "" + mAuth.getCurrentUser().getUid()).commit();
 
                             // Sign in success, update UI with the signed-in user's information
+
                             signPrefs.edit().putBoolean("signInOrOut", true).commit();
-                            Intent intent = new Intent(LoginActivity.this, RestoredList.class);
-                            startActivity(intent);
-                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             login_password.setError("Wrong Email or Password");
