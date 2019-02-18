@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,6 +36,10 @@ public class RestoredList extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private FirebaseAuth mAuth;
+
+    FirebaseUser currentUser;
+
+    SharedPreferences userNamePrefs;
 
     SharedPreferences prefs;
 
@@ -63,8 +67,33 @@ public class RestoredList extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        userNamePrefs = this.getSharedPreferences("userNameKey", Context.MODE_PRIVATE);
+
+        userNamePrefs.edit().putString("userName", UName).commit();
+
         // Get current username
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        currentUser = mAuth.getCurrentUser();
+
+        DatabaseReference UNameRef = mDatabase.child("users").child("username").child(currentUser.getUid() + "");
+
+        ValueEventListener eventUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                UName = dataSnapshot.getValue().toString();
+
+                userNamePrefs.edit().putString("userName", UName).commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        UNameRef.addValueEventListener(eventUserListener);
 
         fab = findViewById(R.id.fab);
 
@@ -80,6 +109,12 @@ public class RestoredList extends AppCompatActivity {
         restoredTimeList = new ArrayList<String>();
 
         restoredArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, restoredTitleList);
+
+
+        if (prefs.getInt("backupOrRestore", 0) == 4) {
+            setTitle(R.string.received_notes);
+        }
+
 
         if (prefs.getInt("backupOrRestore", 0) == 1) {
             // Backup the list in three children (Title - Text - Time) and delete any old backup data
@@ -102,6 +137,8 @@ public class RestoredList extends AppCompatActivity {
 
         } else if (prefs.getInt("backupOrRestore", 0) == 2) {
             // Restore data from backup to restored list
+
+            setTitle(R.string.restored_list);
 
             DatabaseReference titleRef = mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteTitle");
             DatabaseReference textRef = mDatabase.child("Backup").child("" + currentUser.getUid()).child("noteText");
@@ -158,91 +195,103 @@ public class RestoredList extends AppCompatActivity {
             textRef.addListenerForSingleValueEvent(eventTextListener);
             timeRef.addListenerForSingleValueEvent(eventTimeListener);
 
-        } else if (prefs.getInt("backupOrRestore", 0) == 3) {
+        } else if (prefs.getInt("backupOrRestore", 0) == 4) {
 
-            //   refresh();
+            new CountDownTimer(3000, 1000) {
 
-            prefs = this.getSharedPreferences("userNameKey", Context.MODE_PRIVATE);
-
-
-            UName = prefs.getString("userName", "guest");
-
-            // Event listener to add title value to the list
-            // First we wanna get the unique code
-
-            DatabaseReference uniqueCodeRef = mDatabase.child("uniqueCode").child("" + UName);
-
-            uniqueCodeList = new ArrayList<String>();
-
-            ValueEventListener eventUniqueListener = new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                        uniqueCodeList.add(ds.getKey());
-                        DatabaseReference titleRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTitle");
-                        DatabaseReference textRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteText");
-                        DatabaseReference timeRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTime");
-
-                        // Event listener to add title value to the list
-                        ValueEventListener eventTitleListener = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                                restoredTitleList.add(dataSnapshot.getValue().toString());
-                                restoredArrayAdapter = new ArrayAdapter<String>(RestoredList.this,
-                                        android.R.layout.simple_dropdown_item_1line, restoredTitleList);
-                                restoredListView.setAdapter(restoredArrayAdapter);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        };
-
-                        // Event listener to add text value to the list
-                        ValueEventListener eventTextListener = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                                restoredTextList.add(dataSnapshot.getValue().toString());
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        };
-
-                        // Event listener to add time value to the list
-                        ValueEventListener eventTimeListener = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                restoredTimeList.add(dataSnapshot.getValue().toString());
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        };
-
-                        titleRef.addListenerForSingleValueEvent(eventTitleListener);
-                        textRef.addListenerForSingleValueEvent(eventTextListener);
-                        timeRef.addListenerForSingleValueEvent(eventTimeListener);
-                    }
+                public void onTick(long l) {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            };
+                public void onFinish() {
 
-            uniqueCodeRef.addListenerForSingleValueEvent(eventUniqueListener);
+                    setTitle(R.string.received_notes);
+
+                    prefs = getSharedPreferences("userNameKey", Context.MODE_PRIVATE);
+
+
+                    UName = prefs.getString("userName", getString(R.string.guest));
+
+                    // Event listener to add title value to the list
+                    // First we wanna get the unique code
+
+                    DatabaseReference uniqueCodeRef = mDatabase.child("uniqueCode").child("" + UName);
+
+                    uniqueCodeList = new ArrayList<String>();
+
+                    ValueEventListener eventUniqueListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                uniqueCodeList.add(ds.getKey());
+                                DatabaseReference titleRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTitle");
+                                DatabaseReference textRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteText");
+                                DatabaseReference timeRef = mDatabase.child("message").child("" + UName).child("" + ds.getKey()).child("noteTime");
+
+                                // Event listener to add title value to the list
+                                ValueEventListener eventTitleListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                        restoredTitleList.add(dataSnapshot.getValue().toString());
+                                        restoredArrayAdapter = new ArrayAdapter<String>(RestoredList.this,
+                                                android.R.layout.simple_dropdown_item_1line, restoredTitleList);
+                                        restoredListView.setAdapter(restoredArrayAdapter);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                };
+
+                                // Event listener to add text value to the list
+                                ValueEventListener eventTextListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                        restoredTextList.add(dataSnapshot.getValue().toString());
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                };
+
+                                // Event listener to add time value to the list
+                                ValueEventListener eventTimeListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        restoredTimeList.add(dataSnapshot.getValue().toString());
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                };
+
+                                titleRef.addListenerForSingleValueEvent(eventTitleListener);
+                                textRef.addListenerForSingleValueEvent(eventTextListener);
+                                timeRef.addListenerForSingleValueEvent(eventTimeListener);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    };
+
+                    uniqueCodeRef.addListenerForSingleValueEvent(eventUniqueListener);
+
+                }
+            }.start();
 
         } else {
             Intent in = new Intent(RestoredList.this, ListNotesActivity.class);
@@ -266,9 +315,9 @@ public class RestoredList extends AppCompatActivity {
 
                 new AlertDialog.Builder(RestoredList.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Are You Sure?")
-                        .setMessage("You will send the Restored notes to the main list")
-                        .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.are_you_sure)
+                        .setMessage(getString(R.string.you_will_send_restored_to_main))
+                        .setPositiveButton(R.string.yes_sure, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -295,7 +344,7 @@ public class RestoredList extends AppCompatActivity {
                                 finish();
                             }
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
                 return true;
 
@@ -318,9 +367,9 @@ public class RestoredList extends AppCompatActivity {
 
             new android.app.AlertDialog.Builder(RestoredList.this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Are You Sure?")
-                    .setMessage("Do You Want to Delete All Note?")
-                    .setPositiveButton("Yes, Sure", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.you_want_delete_all_notes)
+                    .setPositiveButton(R.string.yes_sure, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -335,7 +384,7 @@ public class RestoredList extends AppCompatActivity {
 
                         }
                     })
-                    .setNegativeButton("No", null)
+                    .setNegativeButton(R.string.no, null)
                     .show();
         }
     }

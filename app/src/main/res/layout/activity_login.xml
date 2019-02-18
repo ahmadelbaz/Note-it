@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/dimens_16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Backup &amp; Restore"
+            android:text="@string/backup_amp_restore"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/textSize_14sp" />
 
@@ -43,9 +43,9 @@
                 android:gravity="center_vertical"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                android:paddingBottom="20dp"
+                android:paddingBottom="@dimen/dimens_20dp"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -62,10 +62,10 @@
                 android:gravity="center_vertical"
                 android:hint="@string/password"
                 android:inputType="textPassword"
-                android:paddingBottom="20dp"
+                android:paddingBottom="@dimen/dimens_20dp"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -73,18 +73,18 @@
             android:id="@+id/loginBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/dimens_20dp"
             android:background="@drawable/loginbutton_selector"
             android:onClick="Login"
             android:text="@string/login"
             android:textColor="@android:color/white"
-            android:textSize="17sp"
+            android:textSize="@dimen/dimens_17sp"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dimens_10dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -92,11 +92,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="@dimen/dimens_5dp"
+                android:layout_marginRight="@dimen/dimens_5dp"
                 android:text="@string/forget_your_password"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
 
             <TextView
                 android:id="@+id/resetPassword"
@@ -107,7 +107,7 @@
                 android:onClick="updatePassword"
                 android:text="@string/reset_password"
                 android:textColor="@color/colorAccent"
-                android:textSize="16sp"
+                android:textSize="@dimen/dimens_16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -115,7 +115,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dimens_10dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -123,11 +123,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="@dimen/dimens_5dp"
+                android:layout_marginRight="@dimen/dimens_5dp"
                 android:text="@string/newUser1"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
 
             <TextView
                 android:id="@+id/signUp"
@@ -138,7 +138,7 @@
                 android:onClick="openRegister"
                 android:text="@string/newUser2"
                 android:textColor="@color/colorAccent"
-                android:textSize="16sp"
+                android:textSize="@dimen/dimens_16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

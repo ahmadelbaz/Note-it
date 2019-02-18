@@ -44,6 +44,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        setTitle(getString(R.string.sign_up));
+
         ref = FirebaseDatabase.getInstance().getReference();
 
         signPrefs = this.getSharedPreferences("signInAndOut", Context.MODE_PRIVATE);
@@ -72,38 +74,38 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         if (enteredEmail.isEmpty() || enteredEmail.equals(" ")) {
-            register_email.setError("Fill here please");
+            register_email.setError(getString(R.string.fill_here_please));
             return;
         }
 
         if (enteredUsername.isEmpty() || enteredUsername.equals(" ")) {
-            register_username.setError("Fill here please");
+            register_username.setError(getString(R.string.fill_here_please));
             return;
         }
 
         for (int n = 0; n < enteredUsername.length(); n++) {
             if (!Character.isLetterOrDigit(enteredUsername.charAt(n))) {
-                register_username.setError("Cannot contain space or symbol");
+                register_username.setError(getString(R.string.cannot_contain));
                 return;
             }
         }
 
         if (enteredPassword.isEmpty() || enteredPassword.equals(" ")) {
-            register_password.setError("Fill here please");
+            register_password.setError(getString(R.string.fill_here_please));
             return;
         }
 
         if (enteredConfirmPassword.isEmpty() || enteredConfirmPassword.equals(" ")) {
-            register_confirm_password.setError("Fill here please");
+            register_confirm_password.setError(getString(R.string.fill_here_please));
             return;
         }
 
         if (enteredPassword.length() < 8) {
-            register_password.setError("Password must be more than 8 characters");
+            register_password.setError(getString(R.string.password_must_be));
         }
 
         if (!enteredConfirmPassword.equals(enteredPassword)) {
-            register_password.setError("Password not match !");
+            register_password.setError(getString(R.string.password_not_match));
             return;
         }
 
@@ -116,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChild(enteredUsername)) {
                     // use "username" already exists
                     // Let the user know he needs to pick another username.
-                    register_username.setError("User name is already exists");
+                    register_username.setError(getString(R.string.username_is_already));
                     onStop();
                     return;
                 } else {

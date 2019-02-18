@@ -40,6 +40,8 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        setTitle(R.string.settings);
+
         welcome_textView = findViewById(R.id.welcome_textView);
 
         mAuth = FirebaseAuth.getInstance();
@@ -49,7 +51,7 @@ public class Settings extends AppCompatActivity {
         // Get username
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null) {
+        if (currentUser != null) {
 
             DatabaseReference UNameRef = mDatabase.child("users").child("username").child(currentUser.getUid() + "");
 
@@ -57,7 +59,7 @@ public class Settings extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    welcome_textView.setText("Welcome " + dataSnapshot.getValue().toString() + " !");
+                    welcome_textView.setText(getString(R.string.welcome) + " " + dataSnapshot.getValue().toString() + " !");
                 }
 
                 @Override
@@ -67,7 +69,7 @@ public class Settings extends AppCompatActivity {
 
             UNameRef.addValueEventListener(eventUserListener);
         } else {
-            welcome_textView.setText("Welcome Guest!");
+            welcome_textView.setText(R.string.welcome_guest);
         }
 
         setting_layout = findViewById(R.id.setting_layout);
@@ -77,12 +79,12 @@ public class Settings extends AppCompatActivity {
 
         NightModeIsOn = prefs.getBoolean("NightModeIsOn", false);
 
-        if(NightModeIsOn){
+        if (NightModeIsOn) {
             setting_layout.setBackgroundColor(Color.BLACK);
             nightMode_switch.setTextColor(Color.WHITE);
             welcome_textView.setTextColor(Color.WHITE);
         } else {
-            setting_layout.setBackgroundColor(Color.parseColor("#FFF9C4"));
+            setting_layout.setBackgroundColor(getResources().getColor(R.color.bright_color));
             nightMode_switch.setTextColor(Color.BLACK);
             welcome_textView.setTextColor(Color.BLACK);
         }
@@ -94,18 +96,17 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 prefs.edit().putBoolean("NightModeIsOn", b).commit();
-                if(b){
+                if (b) {
                     setting_layout.setBackgroundColor(Color.BLACK);
                     nightMode_switch.setTextColor(Color.WHITE);
                     welcome_textView.setTextColor(Color.WHITE);
                 } else {
-                    setting_layout.setBackgroundColor(Color.parseColor("#FFF9C4"));
+                    setting_layout.setBackgroundColor(Color.parseColor(String.valueOf(R.color.bright_color)));
                     nightMode_switch.setTextColor(Color.BLACK);
                     welcome_textView.setTextColor(Color.BLACK);
                 }
             }
         });
-
     }
 
     @Override

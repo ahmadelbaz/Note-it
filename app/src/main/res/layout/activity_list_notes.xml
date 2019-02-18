@@ -5,7 +5,7 @@
     android:id="@+id/menu_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF9C4"
+    android:background="@color/bright_color"
     tools:context=".ListNotesActivity">
 
     <RelativeLayout
@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/emptyNote_imageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/dimens_100dp"
+            android:layout_height="@dimen/dimens_100dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:src="@drawable/note" />
@@ -26,19 +26,10 @@
             android:id="@+id/emptyList_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Empty List ..." />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_below="@+id/emptyNote_imageView"
             android:layout_centerHorizontal="true"
-            android:onClick="addNewNote"
-            android:text="Add Note ?"
-            android:textColor="#5B33FF"
-            android:textSize="20sp" />
+            android:text="@string/empty_list"
+            android:textColor="@color/blue_color" />
 
     </RelativeLayout>
 
@@ -55,9 +46,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/dimens_16dp"
         android:clickable="true"
-        app:backgroundTint="#212121"
+        app:backgroundTint="@color/dark_color"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -51,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        setTitle(getString(R.string.login));
+
         ref = FirebaseDatabase.getInstance().getReference();
 
         signPrefs = this.getSharedPreferences("signInAndOut", Context.MODE_PRIVATE);
@@ -112,12 +114,12 @@ public class LoginActivity extends AppCompatActivity {
         enteredPassword = login_password.getText().toString();
 
         if (enteredEmail.isEmpty() || enteredEmail.equals(" ")) {
-            login_email.setError("Fill here please");
+            login_email.setError(getString(R.string.fill_here_please));
             return;
         }
 
         if (enteredPassword.isEmpty() || enteredPassword.equals(" ")) {
-            login_password.setError("Fill here please");
+            login_password.setError(getString(R.string.fill_here_please));
             return;
         }
 
@@ -132,16 +134,10 @@ public class LoginActivity extends AppCompatActivity {
 
                             prefs = LoginActivity.this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
 
-                            if (prefs.getInt("backupOrRestore", 0) == 3) {
-                                Intent intent = new Intent(LoginActivity.this, ListNotesActivity.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
+                            Intent intent = new Intent(LoginActivity.this, RestoredList.class);
+                            startActivity(intent);
+                            finish();
 
-                                Intent intent = new Intent(LoginActivity.this, RestoredList.class);
-                                startActivity(intent);
-                                finish();
-                            }
                             userKeyPrefs.edit().putString("addUserIdKey", "" + mAuth.getCurrentUser().getUid()).commit();
 
                             // Sign in success, update UI with the signed-in user's information
@@ -149,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                             signPrefs.edit().putBoolean("signInOrOut", true).commit();
                         } else {
                             // If sign in fails, display a message to the user.
-                            login_password.setError("Wrong Email or Password");
+                            login_password.setError(getString(R.string.wrong_email_or_password));
                         }
                     }
                 });
@@ -166,15 +162,15 @@ public class LoginActivity extends AppCompatActivity {
     public void updatePassword(View view) {
 
         final EditText alarmTitle = new EditText(LoginActivity.this);
-        alarmTitle.setHint("Alarm Title");
+        alarmTitle.setHint(R.string.alarm_title);
         alarmTitle.setInputType(InputType.TYPE_CLASS_TEXT);
         alarmTitle.setText(login_email.getText().toString());
         alarmTitle.requestFocus();
 
         new AlertDialog.Builder(LoginActivity.this)
-                .setTitle("Set Alarm Title")
+                .setTitle(R.string.set_alarm_title)
                 .setView(alarmTitle)
-                .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.reset), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -183,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(LoginActivity.this, "Email sent",
+                                            Toast.makeText(LoginActivity.this, R.string.email_sent,
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     }

@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/dimens_16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/dimens_0dp"
             android:layout_weight="2.1">
 
             <LinearLayout
@@ -33,7 +33,7 @@
                     android:gravity="center"
                     android:text="@string/sign_up"
                     android:textColor="@android:color/black"
-                    android:textSize="25sp"
+                    android:textSize="@dimen/dimens_25sp"
                     android:textStyle="bold" />
 
 
@@ -50,9 +50,9 @@
                         android:gravity="center_vertical"
                         android:hint="@string/email"
                         android:inputType="textEmailAddress"
-                        android:paddingBottom="20dp"
+                        android:paddingBottom="@dimen/dimens_20dp"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dimens_16sp" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -66,11 +66,11 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:inputType="text"
                         android:hint="@string/user_name"
-                        android:paddingBottom="20dp"
+                        android:inputType="text"
+                        android:paddingBottom="@dimen/dimens_20dp"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dimens_16sp" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -87,10 +87,10 @@
                         android:gravity="center_vertical"
                         android:hint="@string/password"
                         android:inputType="textPassword"
-                        android:paddingBottom="20dp"
+                        android:paddingBottom="@dimen/dimens_20dp"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dimens_16sp" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -107,10 +107,10 @@
                         android:gravity="center_vertical"
                         android:hint="@string/confirm_password"
                         android:inputType="textPassword"
-                        android:paddingBottom="20dp"
+                        android:paddingBottom="@dimen/dimens_20dp"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dimens_16sp" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -118,31 +118,30 @@
                     android:id="@+id/loginBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/dimens_20dp"
                     android:background="@drawable/loginbutton_selector"
                     android:onClick="Register"
                     android:text="@string/register"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp"
+                    android:textSize="@dimen/dimens_17sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/dimens_10dp"
                     android:gravity="center"
-
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="@dimen/dimens_5dp"
+                        android:layout_marginRight="@dimen/dimens_5dp"
                         android:text="@string/oldUser1"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dimens_16sp" />
 
                     <TextView
                         android:id="@+id/signUp"
@@ -153,7 +152,7 @@
                         android:onClick="openLogin"
                         android:text="@string/oldUser2"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/dimens_16sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>

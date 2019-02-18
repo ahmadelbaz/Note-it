@@ -22,8 +22,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:text="date and time" />
+                android:layout_margin="@dimen/dimens_8dp"
+                android:text="@string/date_and_time" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -31,16 +31,16 @@
 
                 <Button
 
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/dimens_100dp"
+                    android:layout_height="@dimen/dimens_30dp"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_margin="8dp"
+                    android:layout_margin="@dimen/dimens_8dp"
                     android:background="@drawable/loginbutton_selector"
                     android:onClick="sendlNote_button"
-                    android:text="Send"
-                    android:layout_alignParentRight="true"
+                    android:text="@string/send"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp"
+                    android:textSize="@dimen/dimens_17sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
@@ -50,9 +50,9 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_height="@dimen/dimens_1dp"
+            android:layout_marginLeft="@dimen/dimens_8dp"
+            android:layout_marginRight="@dimen/dimens_8dp"
             android:background="@android:color/darker_gray" />
 
         <android.support.design.widget.TextInputLayout
@@ -65,21 +65,21 @@
                 android:id="@+id/noteTitle_editText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginLeft="@dimen/dimens_8dp"
+                android:layout_marginRight="@dimen/dimens_8dp"
                 android:gravity="center_vertical"
-                android:hint="Note Title"
+                android:hint="@string/note_title"
                 android:inputType="textCapSentences"
-                android:paddingBottom="20dp"
+                android:paddingBottom="@dimen/dimens_20dp"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
         </android.support.design.widget.TextInputLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_height="@dimen/dimens_1dp"
+            android:layout_marginLeft="@dimen/dimens_8dp"
+            android:layout_marginRight="@dimen/dimens_8dp"
             android:background="@android:color/darker_gray" />
 
         <android.support.design.widget.TextInputLayout
@@ -92,21 +92,21 @@
                 android:id="@+id/noteText_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginLeft="@dimen/dimens_8dp"
+                android:layout_marginRight="@dimen/dimens_8dp"
                 android:gravity="top"
-                android:hint="What is on your mind?"
+                android:hint="@string/what_is_on_your_mind"
                 android:inputType="textCapSentences|textMultiLine"
-                android:paddingBottom="20dp"
+                android:paddingBottom="@dimen/dimens_20dp"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dimens_16sp" />
         </android.support.design.widget.TextInputLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_height="@dimen/dimens_1dp"
+            android:layout_marginLeft="@dimen/dimens_8dp"
+            android:layout_marginRight="@dimen/dimens_8dp"
             android:background="@android:color/darker_gray" />
 
 
@@ -114,34 +114,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="@dimen/dimens_16dp">
 
             <Button
 
-                android:layout_width="200dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="3dp"
+                android:layout_width="@dimen/dimens_200dp"
+                android:layout_height="@dimen/dimens_45dp"
+                android:layout_marginTop="@dimen/dimens_20dp"
+                android:layout_marginRight="@dimen/dimens_3dp"
                 android:layout_weight="1"
                 android:background="@drawable/loginbutton_selector"
                 android:onClick="cancelNote_button"
-                android:text="Cancle"
+                android:text="@string/cancel"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="@dimen/dimens_17sp"
                 android:textStyle="bold" />
 
             <Button
 
-                android:layout_width="200dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="@dimen/dimens_200dp"
+                android:layout_height="@dimen/dimens_45dp"
+                android:layout_marginLeft="@dimen/dimens_3dp"
+                android:layout_marginTop="@dimen/dimens_20dp"
                 android:layout_weight="1"
                 android:background="@drawable/loginbutton_selector"
                 android:onClick="saveNote_button"
-                android:text="Save"
+                android:text="@string/save"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="@dimen/dimens_17sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -89,23 +89,28 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
         // Get current username
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        DatabaseReference UNameRef = mDatabase.child("users").child("username").child(currentUser.getUid() + "");
+        if (currentUser != null) {
+
+            DatabaseReference UNameRef = mDatabase.child("users").child("username").child(currentUser.getUid() + "");
 
 
-        ValueEventListener eventUserListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            ValueEventListener eventUserListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                UName = dataSnapshot.getValue().toString();
-            }
+                    UName = dataSnapshot.getValue().toString();
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
 
-        UNameRef.addValueEventListener(eventUserListener);
+            UNameRef.addValueEventListener(eventUserListener);
 
+        } else {
+            UName = getString(R.string.guest);
+        }
         // get the time
         Calendar c = Calendar.getInstance();
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
@@ -187,7 +192,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         if (noteId != -1) {
 
-            setTitle("Edit Note");
+            setTitle(R.string.edit_note);
 
             if (a == 1) {
                 newText = "" + editedList.get(noteId);
@@ -222,7 +227,7 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         } else {
 
-            setTitle("Add Note");
+            setTitle(R.string.add_note);
 
             editedList.add("");
             editableText.addTextChangedListener(new TextWatcher() {
@@ -276,14 +281,14 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
 
                 final EditText alarmTitle = new EditText(AddAndEditNoteActivity.this);
-                alarmTitle.setHint("Alarm Title");
+                alarmTitle.setHint(R.string.alarm_title);
                 alarmTitle.setInputType(InputType.TYPE_CLASS_TEXT);
                 alarmTitle.setText(noteTitle_editText.getText().toString());
                 alarmTitle.requestFocus();
 
 
                 final EditText alarmContent = new EditText(AddAndEditNoteActivity.this);
-                alarmContent.setHint("Alarm Note");
+                alarmContent.setHint(R.string.alarm_note);
                 alarmContent.setInputType(InputType.TYPE_CLASS_TEXT);
                 alarmContent.setText("");
                 alarmContent.requestFocus();
@@ -304,20 +309,22 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 //Add Attributes of AlertDialog.builder
                 new AlertDialog.Builder(AddAndEditNoteActivity.this)
-                        .setTitle("Set Alarm Title")
+                        .setTitle(R.string.set_alarm_title)
                         .setView(alarmTitle)
-                        .setPositiveButton("Next", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.next), new DialogInterface.OnClickListener() {
 
 
-                            String daysList[] = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+                            String daysList[] = {getString(R.string.saturday), getString(R.string.sunday),
+                                    getString(R.string.monday), getString(R.string.tuesday), getString(R.string.wednesday),
+                                    getString(R.string.thursday), getString(R.string.friday)};
 
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                                 new AlertDialog.Builder(AddAndEditNoteActivity.this)
-                                        .setTitle("Set Day")
+                                        .setTitle(R.string.pick_day)
                                         .setSingleChoiceItems(daysList, Calendar.DAY_OF_WEEK, null)
-                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        .setPositiveButton(getString(R.string.all_correct), new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int whichButton) {
 
 
@@ -339,12 +346,12 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                                             }
                                         })
-                                        .setNegativeButton("Cancel", null)
+                                        .setNegativeButton(getString(R.string.cancel), null)
                                         .show();
 
                             }
                         })
-                        .setNegativeButton("Cancle", null)
+                        .setNegativeButton(getString(R.string.cancel), null)
                         .show();
 
                 return true;
@@ -354,11 +361,11 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 if (noteText_editText.isEnabled()) {
                     noteText_editText.setEnabled(false);
                     noteTitle_editText.setEnabled(false);
-                    item.setTitle("Edit");
+                    item.setTitle(R.string.edit);
                 } else {
                     noteText_editText.setEnabled(true);
                     noteTitle_editText.setEnabled(true);
-                    item.setTitle("Lock");
+                    item.setTitle(R.string.lock);
 
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 }
@@ -369,11 +376,11 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
                 if (noteText_editText.isEnabled()) {
                     noteText_editText.setEnabled(false);
                     noteTitle_editText.setEnabled(false);
-                    item.setTitle("Edit");
+                    item.setTitle(R.string.edit);
                 } else {
                     noteText_editText.setEnabled(true);
                     noteTitle_editText.setEnabled(true);
-                    item.setTitle("Lock");
+                    item.setTitle(R.string.lock);
 
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 }
@@ -392,9 +399,9 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
                 // if any field is Empty tell the user
                 if (noteTitle_editText.getText().toString().isEmpty() || noteText_editText.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Empty Field !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.empty_field, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Note Saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.note_saved, Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -593,9 +600,9 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
         // if any field is Empty tell the user
         if (noteTitle_editText.getText().toString().isEmpty() || noteText_editText.getText().toString().isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Empty Field !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.empty_field, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Note Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.note_saved, Toast.LENGTH_SHORT).show();
         }
 
         finish();
@@ -663,89 +670,122 @@ public class AddAndEditNoteActivity extends AppCompatActivity implements TimePic
 
     public void sendlNote_button(View view) {
 
-        // create editText for the alert dialog
-        final EditText sendNoteUsername = new EditText(AddAndEditNoteActivity.this);
-        sendNoteUsername.setHint("Enter Username");
-        sendNoteUsername.setInputType(InputType.TYPE_CLASS_TEXT);
-        sendNoteUsername.requestFocus();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.VERTICAL,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        if (currentUser == null) {
 
-        sendNoteUsername.setLayoutParams(lp);
-        sendNoteUsername.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            Intent in = new Intent(AddAndEditNoteActivity.this, LoginActivity.class);
+            startActivity(in);
 
-        // Alert dialog to write username in.
-        new AlertDialog.Builder(AddAndEditNoteActivity.this)
-                .setTitle("Choose Receiver")
-                .setView(sendNoteUsername)
-                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+        } else {
 
-                        usernameOfReceiver = sendNoteUsername.getText().toString();
+            // create editText for the alert dialog
+            final EditText sendNoteUsername = new EditText(AddAndEditNoteActivity.this);
+            sendNoteUsername.setHint(R.string.enter_username);
+            sendNoteUsername.setInputType(InputType.TYPE_CLASS_TEXT);
+            sendNoteUsername.requestFocus();
 
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.VERTICAL,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
 
-                        // Check if the user wrote his own username
-                        if (usernameOfReceiver.equals(UName)) {
+            sendNoteUsername.setLayoutParams(lp);
+            sendNoteUsername.requestFocus();
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-                            new AlertDialog.Builder(AddAndEditNoteActivity.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Error")
-                                    .setMessage("You Can't send a message to yourself")
-                                    .setNegativeButton("Ok", null)
-                                    .show();
+            // Alert dialog to write username in.
+            new AlertDialog.Builder(AddAndEditNoteActivity.this)
+                    .setTitle(R.string.choose_receiver)
+                    .setView(sendNoteUsername)
+                    .setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                            Toast.makeText(AddAndEditNoteActivity.this, "You Can't send a message to yourself", Toast.LENGTH_SHORT).show();
+                            usernameOfReceiver = sendNoteUsername.getText().toString();
 
-                            // Check if the user let the input empty
-                        } else if (usernameOfReceiver.isEmpty()) {
+                            // Check if this username is exists or not
+                            mDatabase.child("users").child("AllUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.hasChild(usernameOfReceiver)) {
+                                        // use "username" already exists
+                                        // Let the user know he needs to pick another username.
+                                        Toast.makeText(AddAndEditNoteActivity.this, R.string.wrong_username, Toast.LENGTH_SHORT).show();
+                                        onStop();
+                                        return;
+                                    } else {
 
-                            new AlertDialog.Builder(AddAndEditNoteActivity.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Error")
-                                    .setMessage("You have t enter a username")
-                                    .setNegativeButton("Ok", null)
-                                    .show();
+                                        // Check if the user wrote his own username
+                                        if (usernameOfReceiver.equals(UName)) {
 
-                            Toast.makeText(AddAndEditNoteActivity.this, "You have to enter a username", Toast.LENGTH_SHORT).show();
+                                            new AlertDialog.Builder(AddAndEditNoteActivity.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle(R.string.error)
+                                                    .setMessage(getString(R.string.you_cant_send_message_to_your_self))
+                                                    .setNegativeButton(R.string.all_correct, null)
+                                                    .show();
 
+                                            Toast.makeText(AddAndEditNoteActivity.this, getString(R.string.you_cant_send_message_to_your_self), Toast.LENGTH_SHORT).show();
 
-                        } else {
+                                            // Check if the user let the input empty
+                                        } else if (usernameOfReceiver.isEmpty()) {
 
-                            // Get the time of sending the message
-                            Calendar c = Calendar.getInstance();
+                                            new AlertDialog.Builder(AddAndEditNoteActivity.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle(R.string.error)
+                                                    .setMessage(getString(R.string.you_have_to_enter_username))
+                                                    .setNegativeButton(R.string.all_correct, null)
+                                                    .show();
 
-                            String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
-                            String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
-
-                            String dateAndTime = date + " - " + time;
-
-                            //Create Unique code for every message with the current time and the username of the user.
-                            String UniqueCode = "" + c.getTimeInMillis() + UName;
-
-                            mDatabase.child("message").child("" + usernameOfReceiver)
-                                    .child("" + UniqueCode)
-                                    .child("noteTitle").setValue("" + noteTitle_editText.getText().toString() + " / From " + UName);
-
-                            mDatabase.child("message").child("" + usernameOfReceiver)
-                                    .child("" + UniqueCode)
-                                    .child("noteText").setValue("" + noteText_editText.getText().toString());
-
-                            mDatabase.child("message").child("" + usernameOfReceiver)
-                                    .child("" + UniqueCode)
-                                    .child("noteTime").setValue("" + dateAndTime);
+                                            Toast.makeText(AddAndEditNoteActivity.this, getString(R.string.you_have_to_enter_username), Toast.LENGTH_SHORT).show();
 
 
-                            // Save the message unique code
-                            mDatabase.child("uniqueCode").child("" + usernameOfReceiver).child("" + UniqueCode).setValue(true);
+                                        } else {
+
+                                            // Get the time of sending the message
+                                            Calendar c = Calendar.getInstance();
+
+                                            String date = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DAY_OF_MONTH);
+                                            String time = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
+
+                                            String dateAndTime = date + " - " + time;
+
+                                            //Create Unique code for every message with the current time and the username of the user.
+                                            String UniqueCode = "" + c.getTimeInMillis() + UName;
+
+                                            mDatabase.child("message").child("" + usernameOfReceiver)
+                                                    .child("" + UniqueCode)
+                                                    .child("noteTitle").setValue("" + noteTitle_editText.getText().toString() + " / From " + UName);
+
+                                            mDatabase.child("message").child("" + usernameOfReceiver)
+                                                    .child("" + UniqueCode)
+                                                    .child("noteText").setValue("" + noteText_editText.getText().toString());
+
+                                            mDatabase.child("message").child("" + usernameOfReceiver)
+                                                    .child("" + UniqueCode)
+                                                    .child("noteTime").setValue("" + dateAndTime);
+
+
+                                            // Save the message unique code
+                                            mDatabase.child("uniqueCode").child("" + usernameOfReceiver).child("" + UniqueCode).setValue(true);
+
+                                            Toast.makeText(AddAndEditNoteActivity.this, getString(R.string.note_sent_to) + usernameOfReceiver, Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
+        }
     }
 }

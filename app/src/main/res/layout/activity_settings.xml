@@ -5,7 +5,7 @@
     android:id="@+id/setting_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF9C4"
+    android:background="@color/bright_color"
     android:orientation="vertical"
     tools:context=".Settings">
 
@@ -13,18 +13,18 @@
         android:id="@+id/welcome_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/dimens_20dp"
         android:text="@string/welcome"
-        android:textSize="18sp" />
+        android:textSize="@dimen/dimens_18sp" />
 
     <Switch
         android:id="@+id/nightMode_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:layout_marginTop="@dimen/dimens_30dp"
+        android:layout_marginRight="@dimen/dimens_20dp"
         android:text="@string/night_mode"
-        android:textSize="18sp" />
+        android:textSize="@dimen/dimens_18sp" />
 
 </LinearLayout>
