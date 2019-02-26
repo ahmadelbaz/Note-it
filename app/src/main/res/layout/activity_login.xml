@@ -74,12 +74,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimens_20dp"
-            android:background="@drawable/loginbutton_selector"
+            android:background="@drawable/button_background"
             android:onClick="Login"
             android:text="@string/login"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dimens_17sp"
             android:textStyle="bold" />
+
 
         <LinearLayout
             android:layout_width="match_parent"

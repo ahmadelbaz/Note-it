@@ -89,7 +89,6 @@ public class Settings extends AppCompatActivity {
             welcome_textView.setTextColor(Color.BLACK);
         }
 
-
         nightMode_switch.setChecked(NightModeIsOn);
 
         nightMode_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -101,7 +100,7 @@ public class Settings extends AppCompatActivity {
                     nightMode_switch.setTextColor(Color.WHITE);
                     welcome_textView.setTextColor(Color.WHITE);
                 } else {
-                    setting_layout.setBackgroundColor(Color.parseColor(String.valueOf(R.color.bright_color)));
+                    setting_layout.setBackgroundColor(getResources().getColor(R.color.bright_color));
                     nightMode_switch.setTextColor(Color.BLACK);
                     welcome_textView.setTextColor(Color.BLACK);
                 }

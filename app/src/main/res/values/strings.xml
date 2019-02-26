@@ -80,6 +80,9 @@
     <string name="save">Save</string>
     <string name="empty_list">Empty List ...</string>
     <string name="backup_amp_restore"><![CDATA[Backup & Restore]]></string>
+    <string name="send_to_user">Send to user</string>
+    <string name="share_external">Share external</string>
+    <string name="share_using">Share via</string>
 
 
 </resources>

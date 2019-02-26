@@ -59,7 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
         register_confirm_password = (TextInputEditText) findViewById(R.id.register_confirm_password);
     }
 
-
     public void Register(View view) {
 
         final String enteredEmail;
@@ -71,7 +70,6 @@ public class RegisterActivity extends AppCompatActivity {
         enteredUsername = register_username.getText().toString();
         enteredPassword = register_password.getText().toString();
         enteredConfirmPassword = register_confirm_password.getText().toString();
-
 
         if (enteredEmail.isEmpty() || enteredEmail.equals(" ")) {
             register_email.setError(getString(R.string.fill_here_please));

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/sign_in"
-        android:title="Sign in"
+        android:title="Login"
         app:showAsAction="never"
         />
 

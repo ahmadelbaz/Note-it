@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -94,6 +95,9 @@ public class ListNotesActivity extends AppCompatActivity {
                 Intent intent = new Intent(ListNotesActivity.this, AddAndEditNoteActivity.class);
                 intent.putExtra("Unique", "NewNote");
                 startActivity(intent);
+                if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                    finish();
+                }
             }
         });
 
@@ -363,7 +367,7 @@ public class ListNotesActivity extends AppCompatActivity {
                 } else {
 
                     //Turn to light mode
-                    menu_background.setBackgroundColor(Color.parseColor(String.valueOf(R.color.bright_color)));
+                    menu_background.setBackgroundColor(getResources().getColor(R.color.bright_color));
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                             ListNotesActivity.this, android.R.layout.simple_dropdown_item_1line, userList) {
@@ -507,6 +511,7 @@ public class ListNotesActivity extends AppCompatActivity {
             case R.id.settingsOption:
                 Intent intent = new Intent(ListNotesActivity.this, Settings.class);
                 startActivity(intent);
+                finish();
                 return true;
 
             case R.id.sign_out:

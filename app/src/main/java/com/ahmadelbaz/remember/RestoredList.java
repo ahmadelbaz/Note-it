@@ -363,7 +363,7 @@ public class RestoredList extends AppCompatActivity {
 
         prefs = this.getSharedPreferences("backupAndRestoreKey", Context.MODE_PRIVATE);
 
-        if (prefs.getInt("backupOrRestore", 0) == 3) {
+        if (prefs.getInt("backupOrRestore", 0) == 4) {
 
             new android.app.AlertDialog.Builder(RestoredList.this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
